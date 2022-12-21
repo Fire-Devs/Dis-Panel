@@ -1,0 +1,6 @@
+port: 5000
+authorization: "AskarFantom"
+logs:
+  discord: true
+  channel: ""
+  uptimechannel: ""
