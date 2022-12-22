@@ -29,7 +29,7 @@ func Run() {
 
 	})))
 
-	http.Handle("/ws", (http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	http.Handle("/stats", (http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		upgrader := websocket.Upgrader{
 			ReadBufferSize:  1024,
 			WriteBufferSize: 1024,
