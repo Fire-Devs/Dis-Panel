@@ -7,6 +7,7 @@ import (
 	"github.com/Dispanel/controllers"
 	"github.com/Dispanel/middleware"
 	"github.com/Dispanel/utils"
+	"github.com/gorilla/websocket"
 	"io/ioutil"
 	"net/http"
 )
@@ -24,6 +25,43 @@ func Run() {
 		} else {
 			utils.WarningHandling("ROUTES", "Unauthorized access to "+r.Host)
 			w.WriteHeader(http.StatusUnauthorized)
+		}
+
+	})))
+
+	http.Handle("/ws", (http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		upgrader := websocket.Upgrader{
+			ReadBufferSize:  1024,
+			WriteBufferSize: 1024,
+		}
+
+		upgrader.CheckOrigin = func(r *http.Request) bool { return true }
+		conn, err := upgrader.Upgrade(w, r, nil)
+		if err != nil {
+			utils.WarningHandling("WEBSOCKET", err.Error())
+			return
+		}
+
+		go func() {
+			for {
+				systemInfo, err := controllers.GetSystemInfo()
+				if err != nil {
+					utils.WarningHandling("WEBSOCKET", err.Error())
+					break
+				}
+				err = conn.WriteJSON(systemInfo)
+				if err != nil {
+					utils.WarningHandling("WEBSOCKET", err.Error())
+					break
+				}
+
+			}
+		}()
+		for {
+			_, _, err := conn.ReadMessage()
+			if err != nil {
+				break
+			}
 		}
 
 	})))
