@@ -67,7 +67,7 @@ func Run() {
 	})))
 
 	http.Handle("/stop", middleware.Authorization(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method == "POST" {
+		if r.Method == "PUT" {
 			body, err := ioutil.ReadAll(r.Body)
 			if err != nil {
 				utils.ErrorHandling(err)
